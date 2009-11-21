@@ -85,7 +85,7 @@ def normalise_offset(offset):
         
 def normalise_integer_list(ints):
     try:
-        return '[%i]' % int(ints)
+        return '[%s]' % int(ints)
     except:
         newints = []
         for i in ints:

@@ -141,8 +141,8 @@ class Timeline(object):
         
         if limited_to is not None:
             try:
-                args['limited_to'] = Utilities.normalise_integer_list(ids)
-            except:
+                args['limited_to'] = Utilities.normalise_integer_list(limited_to)
+            except TypeError, ValueError:
                 raise PlurkInvalidArgument, "limited_to"
         
         if no_comments:

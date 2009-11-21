@@ -47,7 +47,7 @@ class PlurkAPI(object):
         except urllib2.HTTPError, e:
             f = e
             success = False
-        decoded = json.loads(f.read())
+        decoded = json.decode(f.read())
         f.close()
         if 'error_text' in decoded:
             raise PlurkAPIError, decoded['error_text']
