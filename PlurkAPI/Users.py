@@ -7,6 +7,7 @@ Copyright (c) 2009 AjaxLife Developments. All rights reserved.
 """
 
 import datetime
+import Utilities
 
 class Users(object):
     def __init__(self, api):
@@ -27,20 +28,3 @@ class Users(object):
     
     def update(self, current_password=None, full_name=None, new_password=None, email=None, display_name=None, privacy=None, date_of_birth=None):
         raise NotImplemented
-
-class User(object):
-    GENDER_MALE = 1
-    GENDER_FEMALE = 0
-    
-    def __init__(self, dic):
-        self.display_name = dic['display_name'] if 'display_name' in dic else dic['nick_name']
-        self.nick_name = dic['nick_name']
-        self.has_profile_image = dic['has_profile_image']
-        self.date_of_birth = datetime.datetime.strptime(dic['date_of_birth'], '%a, %d %b %Y %H:%M:%S %Z').date()
-        self.location = dic['location']
-        self.full_name = dic['full_name']
-        self.gender = dic['gender']
-        self.timezone = dic['timezone']
-        self.karma = dic['karma']
-        self.id = dic['id']
-        self.avatar = dic['avatar']

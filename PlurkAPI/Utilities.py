@@ -8,6 +8,7 @@ Copyright (c) 2009 AjaxLife Developments. All rights reserved.
 
 import re
 import datetime
+from Models import *
 
 VALID_QUALIFIERS = (
     'loves', 
@@ -93,14 +94,31 @@ def normalise_integer_list(ints):
         return '[%s]' % ','.join(newints)
 
 def normalise_plurk_id(plurk_id):
+    try:
+        return int(plurk_id)
+    except:
+        pass
     if isinstance(plurk_id, basestring):
-        if plurk_id.isdigit():
-            plurk_id = int(plurk_id)
-        elif plurk_id.isalnum():
+        if plurk_id.isalnum():
             plurk_id = int(plurk_id, 36)
         else:
             raise ValueError
-    elif isinstance(plurk_id, int):
-        return plurk_id
     else:
         raise TypeError
+
+def parse_time(time):
+    return datetime.datetime.strptime(time, '%a, %d %b %Y %H:%M:%S %Z').date()
+
+def parse_plurk_list(plurks):
+    newlist = []
+    for plurk in plurks:
+        newlist.append(Plurk(plurk))
+    return newlist
+
+def parse_user_list(users):
+    newlist = []
+    for plurk in plurks:
+        newlist.append(User(plurk))
+    return newlist
+
+        

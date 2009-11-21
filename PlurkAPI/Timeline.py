@@ -7,7 +7,9 @@ Copyright (c) 2009 AjaxLife Developments. All rights reserved.
 """
 
 from Exceptions import *
+from Models import *
 import Utilities
+import Users
 
 class Timeline(object):
     def __init__(self, api):
@@ -24,7 +26,8 @@ class Timeline(object):
         if not self.api.logged_in:
             raise PlurkNotLoggedIn
         
-        return self.api.request_api('Timeline', 'getPlurk', plurk_id=plurk_id)["plurks"]
+        returned = self.api.request_api('Timeline', 'getPlurk', plurk_id=plurk_id)
+        return (Plurk(returned["plurks"]), User(returned["user"]))
     
     def get_plurks(self, offset=None, limit=None, only_user=None, only_responded=False, only_private=False):
         if not self.api.logged_in:
@@ -55,7 +58,8 @@ class Timeline(object):
         if only_private:
             args['only_private'] = True
         
-        return self.api.request_api('Timeline', 'getPlurks', **args)["plurks"]
+        returned = self.api.request_api('Timeline', 'getPlurks', **args)
+        return (Utilities.parse_plurk_list(returned["plurks"]), Utilities.parse_user_list(returned["plurk_users"]))
     
     def poll(self, offset):
         if not self.api.logged_in:
@@ -65,7 +69,8 @@ class Timeline(object):
             raise PlurkMissingArgument, "offset"
         
         try:
-            return self.api.request_api('Polling', 'getPlurks', offset=Utilities.normalise_offset(offset))
+            returned = self.api.request_api('Polling', 'getPlurks', offset=Utilities.normalise_offset(offset))
+            return (Utilities.parse_plurk_list(returned["plurks"]), Utilities.parse_user_list(returned["plurk_users"]))
         except ValueError, TypeError:
             raise PlurkInvalidArgument, "offset"
     
@@ -86,7 +91,7 @@ class Timeline(object):
             except ValueError, TypeError:
                 raise PlurkInvalidArgument, "limit"
         
-        return self.api.request_api('Timeline', 'getUnreadPlurks', **args)["plurks"]
+        return Utilities.parse_plurk_list(self.api.request_api('Timeline', 'getUnreadPlurks', **args)["plurks"])
     
     def mute_plurks(self, ids=None):
         if not self.api.logged_in:
@@ -155,7 +160,7 @@ class Timeline(object):
                 raise PlurkInvalidArgument, "lang"
             args['lang'] = lang
         
-        return self.api.request_api('Timeline', 'plurkAdd', **args)
+        return Plurk(self.api.request_api('Timeline', 'plurkAdd', **args))
     
     def upload_picture(self, image):
         raise NotImplemented

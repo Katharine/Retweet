@@ -8,7 +8,7 @@ Copyright (c) 2009 AjaxLife Developments. All rights reserved.
 
 import Utilities
 from Exceptions import *
-from Users import User
+from Models import *
 
 class Alerts(object):
     def __init__(self, api):
