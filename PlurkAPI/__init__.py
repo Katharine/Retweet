@@ -10,10 +10,7 @@ Copyright (c) 2009 AjaxLife Developments. All rights reserved.
 import urllib
 import urllib2
 import cookielib
-try:
-    import cjson as json
-except ImportError:
-    import json
+import json
 
 # Plurk imports
 from Exceptions import *
@@ -31,6 +28,7 @@ import Cliques
 class PlurkAPI(object):
     api_root = 'http://www.plurk.com/API/%s/%s'
     username = None
+    user_id = None
     password = None
     api_key = None
     logged_in = False
@@ -47,7 +45,11 @@ class PlurkAPI(object):
         except urllib2.HTTPError, e:
             f = e
             success = False
-        decoded = json.decode(f.read())
+        data = f.read()
+        try:
+            decoded = json.loads(data)
+        except:
+            raise PlurkAPIError, "Incomprehensible response: %s" % data
         f.close()
         if 'error_text' in decoded:
             raise PlurkAPIError, decoded['error_text']
@@ -76,6 +78,7 @@ class PlurkAPI(object):
         try:
             response = self.request_api('Users', 'login', username=self.username, password=self.password)
             self.logged_in = True
+            self.user_id = response["user_info"]["id"]
             return response
         except PlurkAPIError, e:
             return PlurkLoginError, e

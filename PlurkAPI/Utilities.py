@@ -94,13 +94,15 @@ def normalise_integer_list(ints):
         return '[%s]' % ','.join(newints)
 
 def normalise_plurk_id(plurk_id):
+    if isinstance(plurk_id, Plurk):
+        return plurk_id.plurk_id
     try:
         return int(plurk_id)
     except:
         pass
     if isinstance(plurk_id, basestring):
         if plurk_id.isalnum():
-            plurk_id = int(plurk_id, 36)
+            return int(plurk_id, 36)
         else:
             raise ValueError
     else:
