@@ -8,6 +8,7 @@ Copyright (c) 2009 AjaxLife Developments. All rights reserved.
 
 import re
 import datetime
+from htmlentitydefs import name2codepoint as n2cp
 from Models import *
 
 VALID_QUALIFIERS = (
@@ -123,4 +124,22 @@ def parse_user_list(users):
         newlist.append(User(plurk))
     return newlist
 
-        
+def decode_html_entities(string):
+    def substitute_entity(match):
+        ent = match.group(3)
+        if match.group(1) == "#":
+            # decoding by number
+            if match.group(2) == '':
+                # number is in decimal
+                return unichr(int(ent))
+            elif match.group(2) == 'x':
+                # number is in hex
+                return unichr(int('0x'+ent, 16))
+        else:
+            # they were using a name
+            cp = n2cp.get(ent)
+            if cp: return unichr(cp)
+            else: return match.group()
+
+    entity_re = re.compile(r'&(#?)(x?)(\w+);')
+    return entity_re.subn(substitute_entity, string)[0]        

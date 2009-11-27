@@ -56,21 +56,22 @@ for row in rows:
             in_reply_to_plurk = None
         plurk_text = '%s: %s' % (tweet.author.screen_name, re.sub(r'\B@([0-9a-zA-Z_]+)', r'twitter.com/\1 (@\1)', tweet.text))
         plurk_text = plurk_text.replace('http://','') # Save on characters.
-        parts = textwrap.wrap(plurk_text.encode('utf-8'), 140)
+        parts = textwrap.wrap(PlurkAPI.Utilities.decode_html_entities(plurk_text.encode('utf-8')), 139)
         print parts
         try:
             if in_reply_to_plurk is None:
                 reply_to = plurk_api.Timeline.plurk_add(
                     content=parts.pop(0),
-                    limited_to=plurk_uid
+                    limited_to=plurk_uid,
+                    qualifier='shares'
                 ).plurk_id
                 print "Made new plurk"
             else:
-                plurk_api.Responses.add(plurk_id=in_reply_to_plurk, qualifier='says', content=parts.pop(0))
+                plurk_api.Responses.add(plurk_id=in_reply_to_plurk, qualifier='shares', content=parts.pop(0))
                 reply_to = in_reply_to_plurk
                 print "Reponding to old plurk #%s" % reply_to
             while len(parts) > 0:
-                plurk_api.Responses.add(plurk_id=reply_to, qualifier='says', content=parts.pop(0))
+                plurk_api.Responses.add(plurk_id=reply_to, content=('…%s' % parts.pop(0)))
     
             c.execute("""
                 INSERT INTO plurkedtweets (userid, tweeter, tweet, plurk, `date`, in_reply_to)
