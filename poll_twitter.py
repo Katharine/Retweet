@@ -43,6 +43,9 @@ for row in rows:
     
     new_tweets.reverse()
     for tweet in new_tweets:
+        c.execute("SELECT plurk FROM plurkedtweets WHERE tweet = %s", tweet.id)
+        if c.fetchone() is not None:
+            continue
         if tweet.in_reply_to_status_id:
             c.execute("SELECT plurk FROM plurkedtweets WHERE tweet = %s", tweet.in_reply_to_status_id)
             in_reply_to_plurk = c.fetchone()

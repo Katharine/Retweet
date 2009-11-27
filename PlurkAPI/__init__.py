@@ -10,7 +10,10 @@ Copyright (c) 2009 AjaxLife Developments. All rights reserved.
 import urllib
 import urllib2
 import cookielib
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 # Plurk imports
 from Exceptions import *

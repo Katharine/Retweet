@@ -44,7 +44,7 @@ class Plurk(object):
         self.response_count = dic['response_count']
         self.responses_seen = dic['responses_seen']
         if 'limited_to' in dic and dic['limited_to'] is not None:
-            self.limited_to = dic['limited_to'].strip('|').split('|')
+            self.limited_to = dic['limited_to'].strip('|').split('||')
         else:
             self.limited_to = None
 

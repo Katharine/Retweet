@@ -90,7 +90,7 @@ def normalise_integer_list(ints):
     except:
         newints = []
         for i in ints:
-            newints.append(int(i))
+            newints.append(str(i))
         return '[%s]' % ','.join(newints)
 
 def normalise_plurk_id(plurk_id):
